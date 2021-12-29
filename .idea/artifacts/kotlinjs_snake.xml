@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="kotlinjs-snake">
     <output-path>$PROJECT_DIR$/build/libs</output-path>
-    <root id="archive" name="kotlinjs-snake.jar">
-      <element id="module-output" name="kotlinjs-snake.main" />
-    </root>
+    <root id="archive" name="kotlinjs-snake.jar" />
   </artifact>
 </component>
