@@ -7,6 +7,10 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
 }
 
+dependencies {
+
+}
+
 kotlin {
     js(LEGACY) {
         binaries.executable()
