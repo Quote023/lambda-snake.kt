@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.game-header{
+  text-align: center;
+}
+
+.game-container{
+  display: flex;
+  place-content: center;
+  align-content: center;
+  justify-content: space-between;
+  gap: 1rem
+}
+
+#game-canvas{
+  height: 90vh;
+}
+
+.screen-section{
+  height: 90vh;
+  flex: 1;
+}
