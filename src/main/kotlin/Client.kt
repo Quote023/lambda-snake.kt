@@ -2,6 +2,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.random.Random
 
 fun main() {
@@ -19,6 +20,8 @@ open class Tile(val x: Int, val y: Int){
   val position by lazy { Pair(x,y) }
   open fun copy(x: Int = this.x, y: Int = this.y): Tile = Tile(x,y)
 }
+
+var desiredDir = Direction.Left
 
 class Player(
   x: Int,
@@ -48,31 +51,34 @@ fun gameStart(){
   val boardWidth = cWidth / 10
   val boardHeight = cHeight / 10
   
+  window.addEventListener("keydown",{event -> (event as KeyboardEvent).let {
+   when(it.key){
+     "ArrowUp","w" -> { desiredDir = Direction.Up }
+     "ArrowDown","s" -> { desiredDir = Direction.Down }
+     "ArrowLeft","a" -> { desiredDir = Direction.Left }
+     "ArrowRight","d" -> { desiredDir = Direction.Right }
+     else -> Unit
+   } 
+  }})
+  
   val board = initRandomBoard(30,30)
   gameLoop(board,context,boardWidth,boardHeight)
 }
 
 fun gameLoop( boardState: List<Tile>, context: CanvasRenderingContext2D, width: Int,height: Int){
   val player = (boardState.find { it is Player }!! as Player).let { 
-    val chance = Random.Default.nextInt(100);
-    when{
-      chance < 25 -> it.copy(direction = Direction.Down)
-      chance < 50 -> it.copy(direction = Direction.Left)
-      chance < 75 -> it.copy(direction = Direction.Right)
-      else -> it
-    }
+    if(desiredDir == it.direction) it
+    else it.copy(direction =  desiredDir)
   }
   
   console.log(player)
   renderBoard(context,boardState,width,height)
   val newBoard = movePlayer(boardState,player)
-  window.setTimeout(handler =  {gameLoop(newBoard,context,width,height)}, 200)
+  window.setTimeout({gameLoop(newBoard,context,width,height)}, 100)
 }
 
 
-
-
-fun xyToIndex(x: Int,y: Int, width:Int) = x * width + y;
+fun xyToIndex(x: Int,y: Int, width:Int) = x * width + y
 fun indexToXY(index: Int, width:Int) = Pair(index % width,index/width)
 
 fun clampToMin(value: Int,min: Int, fallback: Int) = if (value >= min) value else fallback
@@ -81,8 +87,8 @@ fun clampToMax(value: Int,max: Int, fallback: Int) = if (value <= max) value els
 
 fun movePlayer(board: List<Tile>, player: Player): List<Tile> {
   return when(player.direction){
-    Direction.Up -> moveTile(board,player, Pair(player.x, clampToMax(player.y + 1, 29,0)))
-    Direction.Down -> moveTile(board,player, Pair(player.x, clampTo0(player.y - 1, 29)))
+    Direction.Up -> moveTile(board,player, Pair(player.x, clampTo0(player.y - 1, 29)))
+    Direction.Down -> moveTile(board,player, Pair(player.x, clampToMax(player.y + 1, 29,0)))
     Direction.Left -> moveTile(board,player, Pair(clampTo0(player.x - 1, 29), player.y))
     Direction.Right -> moveTile(board,player, Pair(clampToMax(player.x + 1, 29,0), player.y))
   }
