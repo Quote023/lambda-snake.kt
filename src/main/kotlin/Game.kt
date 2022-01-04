@@ -12,6 +12,8 @@ fun main() {
     window.onload = { gameStart() }
 }
 
+const val CANVAS_SCALE = 10
+
 /**
  * PARTE IMPURA.
  * estado da última tecla de direção apertada pelo usuário.
@@ -28,8 +30,8 @@ fun gameStart(){
   //Calcula as dimensões da tela de jogo.
   val cWidth = canvas.width
   val cHeight = canvas.height
-  val boardWidth = cWidth / 10
-  val boardHeight = cHeight / 10
+  val boardWidth = cWidth / CANVAS_SCALE
+  val boardHeight = cHeight / CANVAS_SCALE
   
   //Gatilho disparado sempre que qualquer tecla seja pressionada no teclado do usuário
   window.addEventListener("keydown",{event -> (event as KeyboardEvent).let {
@@ -43,10 +45,10 @@ fun gameStart(){
    } 
   }})
   
-  //Incializa um tabuleiro aleatório de tamanho 30x30
+  //Incializa um tabuleiro aleatório
   //TODO: parametrizar esse tamanho?
-  val board = initRandomBoard(30,30)
-  
+  val board = initRandomBoard(boardWidth,boardHeight)
+
   //Começa o loop de jogo, isso é uma função recursiva que roda indefinidamente até que o jogo acabe
   gameLoop(board,context,boardWidth,boardHeight)
 }
@@ -57,7 +59,7 @@ fun gameStart(){
  * @param width largura do tabuleiro **(Definido na primeira iteração, não mudar)**
  * @param height altura do tabuleiro **(Definido na primeira iteração, não mudar)**
  */
-fun gameLoop(boardState: List<Tile>, context: CanvasRenderingContext2D, width: Int,height: Int){
+fun gameLoop(boardState: Board, context: CanvasRenderingContext2D, width: Int,height: Int){
   /**
   * Caso a direção do player seja alterada entre as renderizações (AÇÃO IMPURA)
   * gera uma cópia da peça do jogador com essa informação atualizada e usa ela no lugar
@@ -68,6 +70,7 @@ fun gameLoop(boardState: List<Tile>, context: CanvasRenderingContext2D, width: I
   }
   //Imprime no canvas a tela atual
   renderBoard(context,boardState,width,height)
+  
   val newBoard = movePlayer(boardState,player)
   window.setTimeout({gameLoop(newBoard,context,width,height)}, 100)
 }
