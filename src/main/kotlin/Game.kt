@@ -70,4 +70,5 @@ fun gameLoop(boardState: List<Tile>, context: CanvasRenderingContext2D, width: I
   renderBoard(context,boardState,width,height)
   val newBoard = movePlayer(boardState,player)
   window.setTimeout({gameLoop(newBoard,context,width,height)}, 100)
+  currentScore(player)
 }
