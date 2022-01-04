@@ -27,8 +27,11 @@
 }
 
 #score-table {
-  margin-left: 25%;
+  margin: 10%;
   margin-top: 3%;
+}
+#score-table table{
+width: 100%
 }
 
 #score-table table tr:nth-child(odd) {
