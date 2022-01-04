@@ -34,10 +34,11 @@ open class Tile protected constructor(val x: Int, val y: Int) {
 class Player(
   x: Int,
   y: Int,
-  val direction: Direction = Direction.LEFT
+  val direction: Direction = Direction.LEFT, 
+  val score: Int = 0
 ): Tile(x,y){
-  fun copy(x: Int = this.x, y: Int = this.y, direction: Direction = this.direction) = Player(x,y,direction)
-  override fun copy(x: Int, y: Int) = Player(x,y,this.direction)
+  fun copy(x: Int = this.x, y: Int = this.y, direction: Direction = this.direction, score: Int = this.score) = Player(x,y,direction, score)
+  override fun copy(x: Int, y: Int) = Player(x,y,this.direction, this.score)
 }
 
 /**
