@@ -73,4 +73,5 @@ fun gameLoop(boardState: Board, context: CanvasRenderingContext2D, width: Int,he
   
   val newBoard = movePlayer(boardState,player)
   window.setTimeout({gameLoop(newBoard,context,width,height)}, 100)
+  currentScore(player)
 }
