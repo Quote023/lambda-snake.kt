@@ -12,15 +12,44 @@ enum class Direction {
   RIGHT
 }
 
+fun Direction.isInverse(b: Direction): Boolean{
+  val dirs = listOf(this,b)
+  return dirs.containsAll(listOf(Direction.UP,Direction.DOWN)) || dirs.containsAll(listOf(Direction.LEFT,Direction.RIGHT)) 
+}
+
 data class Board(
   val width: Int,
   val height: Int,
-  val tiles: List<Tile> = listOf<Tile>(),
+  val tiles: List<Tile> = listOf(),
+  val player: Player = tiles.find { it is Player } as Player,
 ): List<Tile> by tiles {
+
+  override fun toString(): String {
+    val log = StringBuilder()
+    (0 until (width * height)).forEach{ index ->
+      when(this[index]) {
+        is Player -> log.append("🟢")
+        is PlayerBody -> log.append("🔷")
+        is Fruit -> log.append("🟥")
+        else -> log.append("⬜")
+      }
+      if(indexToXY(index,width).x >= width - 1) log.append("\n")
+    }
+    return log.toString()
+  }
   
 }
 
-typealias Position = Pair<Int,Int>
+data class Position(val x:Int, val y:Int){
+  operator fun div(b: Int): Position {
+    return Position(x/b, y/b)
+  }
+}
+data class Dimensions(val width: Int, val height: Int){
+  operator fun div(b: Int): Dimensions {
+    return Dimensions(width/b, height/b)
+  }
+}
 
 /*
 As classes aqui funcionam como uma simulação de tipo de dados algebraicos/compostos
@@ -45,27 +74,30 @@ class Player(
   y: Int,
   val direction: Direction = Direction.LEFT, 
   val score: Int = 0,
-  val tail: List<Position> = listOf(Position(x,y))
+  val tail: List<Position> = listOf(Position(x,y)),
+  val life: Int = 1,
 ): Tile(x,y){
   
   fun copy(
     x: Int = this.x, y: Int = this.y,
     direction: Direction = this.direction,
     score: Int = this.score,
-    tail: List<Position> = this.tail  
-  ) = Player(x,y,direction, score,tail)
+    tail: List<Position> = this.tail,  
+    life: Int = this.life,
+  ) = Player(x,y,direction, score,tail,life)
   
   fun copy(
     position: Position = this.position,
     direction: Direction = this.direction,
     score: Int = this.score,
-    tail: List<Position> = this.tail
-  ) = Player(position.first,position.second,direction, score,tail)
+    tail: List<Position> = this.tail,
+    life: Int = this.life,
+    ) = Player(position.x,position.y,direction, score,tail,life)
   
   override fun copy(
     x: Int,
     y: Int
-  ) = Player(x,y,this.direction, this.score,this.tail)
+  ) = Player(x,y,this.direction, this.score,this.tail,this.life)
 }
 
 

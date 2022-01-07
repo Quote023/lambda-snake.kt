@@ -1,8 +1,8 @@
 /** Converte Coordeanadas bidimensionais (x,y e largura do tabuleiro) em um indice para ser usado na lista de casas **/
-fun xyToIndex(pos:Position, width:Int) = xyToIndex(pos.second,pos.first,width)
+fun xyToIndex(pos:Position, width:Int) = xyToIndex(pos.x,pos.y,width)
 fun xyToIndex(x: Int,y: Int, width:Int) = (y * width) + x
 /** Converte o indice e a largura do tabuleiro em um par de coordenadas bidimensionais referente ao indice **/
-fun indexToXY(index: Int, width:Int) = Position(index/width,index % width)
+fun indexToXY(index: Int, width:Int) = Position(index % width,index/width)
 
 /**
  *  Retorna o valor informado caso ele seja maior ou igual ao minimo, caso contrário retorna o 3º parâmetro 

@@ -3,10 +3,10 @@ import kotlin.random.Random
 
 
 fun move(position: Position, direction: Direction, topLimit: Int, bottomLimit: Int): Position = when(direction){
-  Direction.UP    -> Position(position.first, clampTo0(position.second - 1, topLimit))
-  Direction.DOWN  -> Position(position.first, clampToMax(position.second + 1, topLimit,0))
-  Direction.LEFT  -> Position(clampTo0(position.first - 1, bottomLimit), position.second)
-  Direction.RIGHT -> Position(clampToMax(position.first + 1, bottomLimit,0), position.second)
+  Direction.UP    -> Position(position.x, clampTo0(position.y - 1, topLimit))
+  Direction.DOWN  -> Position(position.x, clampToMax(position.y + 1, topLimit,0))
+  Direction.LEFT  -> Position(clampTo0(position.x - 1, bottomLimit), position.y)
+  Direction.RIGHT -> Position(clampToMax(position.x + 1, bottomLimit,0), position.y)
 }
 
 /**
@@ -18,11 +18,8 @@ fun movePlayer(board: Board, player: Player): Board {
   val targetTile = tileAt(board,nextPosition)
   
   val newPlayer = when(targetTile){
-    is Fruit -> player.copy(
-      score = player.score + 1,
-      position = nextPosition,
-      tail =  listOf(nextPosition) + player.tail
-    )
+    is Fruit -> player.copy(score = player.score + 1,position = nextPosition,tail =  listOf(nextPosition) + player.tail)
+    is PlayerBody -> player.copy(life = player.life - 1)
     else -> player.copy(position = nextPosition, tail = listOf(nextPosition) + player.tail.dropLast(1))
   }
   
@@ -38,14 +35,14 @@ fun movePlayer(board: Board, player: Player): Board {
     }
   }
   
-  return board.copy(tiles=newTiles)
+  return board.copy(tiles=newTiles, player = newPlayer)
 }
 
 fun tileAt(board: Board,position: Position): Tile {
   return tileAt(board,xyToIndex(position, board.width))
 }
 fun tileAt(board: Board,index: Int): Tile {
-  return board[index];
+  return board[index]
 }
 
 /**
@@ -79,25 +76,32 @@ fun replaceTile(board: Board, target: Tile): Board {
 /**
  * Imprime no Canvas cada casa com sua respectiva cor
  */
-fun renderBoard(context: CanvasRenderingContext2D, board:Board, boardWidth: Int, boardHeight: Int){
+fun renderBoard(context: CanvasRenderingContext2D, board:Board){
   //TODO: transformar esse for em um map ou fold
   //Percorre todas as casas do tabuleiro e desenha uma por uma na tela.
-  for (y in 0 until boardWidth){
-    for (x in 0 until boardHeight){
-      val index = xyToIndex(x,y,boardWidth)
+  (0 until (board.width * board.height)).forEach{ index -> 
+      val pos = indexToXY(index,board.width)
       val tile = board[index]
 
       //Define a cor do próximo quadrado a ser desenhado baseado em qual peça será impressa.
       context.fillStyle = when(tile) {
-        is Player -> "green"
-        is PlayerBody -> "blue"
-        is Fruit -> "red"
-        else -> "white"
+        is Player -> {
+          "green"
+        }
+        is PlayerBody -> {
+          "blue"
+        }
+        is Fruit -> {
+          "red"
+        }
+        else -> {
+          "white"
+        }
       }
+      
       //Desenha um quadrado de 10x10 pixeis representando 1 casa do tabuleiro
       //o (x,y) é multiplicado por 10 pois o canvas está escalado em 10x (temos um tabuleiro de 30x30 em um canvas de 300x300)
-      context.fillRect(y.toDouble() * 10, x.toDouble() * 10, 10.0,10.0)
-    }
+      context.fillRect(pos.x.toDouble() * 10, pos.y.toDouble() * 10, 10.0,10.0)
   }
 }
 
@@ -121,7 +125,7 @@ fun randomPosition(maxWidth: Int, maxHeight: Int): Position {
  */
 fun initRandomBoard(width: Int, height: Int): Board {
   val playerPos = randomPosition(width,height)
-  val fruitPos = playerPos.copy(first = playerPos.first - 2)
+  val fruitPos = playerPos.copy(x = playerPos.x - 2)
 
   //Caso os valores calculados sejam iguais, recalcula em uma nova posição até termos posições diferentes.
   if(playerPos == fruitPos) return initRandomBoard(width,height)
@@ -131,9 +135,9 @@ fun initRandomBoard(width: Int, height: Int): Board {
     //E instânciamos Players e Frutas em suas respectivas posições calculadas, todas as demais posições serão casas em branco.
     with(indexToXY(pos,width)) {
       when (this) {
-        playerPos -> Player(this.first,this.second)
-        fruitPos -> Fruit(this.first,this.second)
-        else -> Blank(this.first,this.second)
+        playerPos -> Player(this.x,this.y)
+        fruitPos -> Fruit(this.x,this.y)
+        else -> Blank(this.x,this.y)
       }
     }
   }
