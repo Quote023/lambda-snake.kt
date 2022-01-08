@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 import org.w3c.dom.CanvasRenderingContext2D
 import kotlin.random.Random
 
@@ -125,7 +127,7 @@ fun randomPosition(maxWidth: Int, maxHeight: Int): Position {
  */
 fun initRandomBoard(width: Int, height: Int): Board {
   val playerPos = randomPosition(width,height)
-  val fruitPos = playerPos.copy(x = playerPos.x - 2)
+  val fruitPos = randomPosition(width,height)
 
   //Caso os valores calculados sejam iguais, recalcula em uma nova posição até termos posições diferentes.
   if(playerPos == fruitPos) return initRandomBoard(width,height)

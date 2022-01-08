@@ -14,7 +14,60 @@
       <div  class="screen-section">
         <div id="score"> </div>
       </div>
-      <canvas id="game-canvas" width="300" height="300"></canvas>
+      <div>
+        <div
+          id="start-menu"
+          class="main-section"
+        >
+          <Header class="menu-header"><img src="./logo.svg" alt="Snake.KT Logo"></Header>
+          <div class="menu-buttons">
+            <button id="start-btn">Iniciar Jogo</button>
+          </div>
+          <div class="instruction-box">
+            <strong>Instruções</strong>
+            <p>
+              Mova a cobrinha utilizando as setas do teclado ou as teclas AWSD
+              <br>
+              Colete as frutas vermelhas para ganhar pontos, conforme você for pontuando a cobrinha aumenta e a velocidade do jogo também!
+              <br>
+              Você perde o jogo ao tentar comer uma parte do próprio corpo
+            </p>
+          </div>
+          <footer>
+            <p>Créditos</p>
+            <a href="https://github.com/Quote023">Alexandre Candido Souza</a>;
+            <a href="https://github.com/nandasuna1">Fernanda Barbosa De Pinho</a>;
+            <a href="https://github.com/AlberttMoura">José Alberto Moura</a>;
+            <a href="https://github.com/SarahMedeir0s">Sarah Araujo Medeiros</a>;
+          </footer>
+        </div>
+        <div
+          style="display:none;"
+          id="end-screen"
+          class="main-section"
+        >
+          <Header id="end-header" class="menu-header">
+            <img id="end-img"  src="./game_over.svg" alt="Texto Game Over com bandeira de caveira em baixo">
+            <strong class="end-score-text">Sua Pontuação: <span id="game-score">300</span> </strong>
+          </Header>
+          
+          <form id="end-form">
+            <div>
+              <label >
+                Seu Nome:
+                <input type="text" name="name" placeholder="Digite o nome a ser salvo no ranking..." >
+              </label>
+              <button type="submit" id="restart-btn">Recomeçar</button> 
+            </div>
+          </form>
+        </div>
+        <canvas
+          style="display:none;"
+          id="game-canvas"
+          width="300"
+          height="300"
+        ></canvas>
+      </div>
       <div  class="screen-section">
         <div id="score-table"> </div>
       </div>

@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+body{
+  font-family: cursive;
+}
 .game-header{
   text-align: center;
 }
@@ -16,6 +19,64 @@
   height: 90vh;
 }
 
+.main-section{
+  height: 90vh;
+  background: white;
+  aspect-ratio: auto 300 / 300;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-buttons{
+  margin: 2rem;
+  
+}
+
+
+#end-screen{
+  background: black;
+  color: white;
+}
+
+
+#end-header{
+  margin-bottom: 2rem;
+}
+
+.end-score-text{
+  color: #f28201;
+  font-size: 2rem;
+}
+
+.end-score-text>#game-score{
+  color: #00a6f1;
+}
+
+
+.menu-header{
+  width: 100%;
+  text-align: center;
+}
+
+.menu-header>img{
+  width: 90%;
+  margin:auto;
+  display: block;
+}
+
+.menu-buttons>button{
+  padding: 0.5rem;
+}
+.instruction-box{
+  padding: 0.5rem;
+  margin: 1rem;
+  background: bisque;
+  text-align: center;
+}
+
+
 .screen-section{
   height: 90vh;
   flex: 1;
@@ -27,8 +88,7 @@
 }
 
 #score-table {
-  margin: 10%;
-  margin-top: 3%;
+  margin: 3% 10% 10%;
 }
 #score-table table{
 width: 100%

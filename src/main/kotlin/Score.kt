@@ -8,28 +8,24 @@ fun currentScore(player: Player){
       |<p>Total de pontos: $pontos</p>
       """.trimMargin()
   }
-  
-  val scoreTable = document.getElementById("score-table")
-  if(scoreTable != null){
-    scoreTable.innerHTML = """
-      <table>
+}
+
+fun updateRanking(ranking: List<RankingEntry>){
+  val scoreTable = document.getElementById("score-table") ?: return
+  scoreTable.innerHTML = """
+    <table>
+      <tr>
+        <th>Colocação</th>
+        <th>Nome</th>
+        <th>Pontuação</th>
+      </tr>
+      ${ ranking.mapIndexed { index,data ->  """
         <tr>
-          <th>Colocação</th>
-          <th>Pontuação</th>
-        </tr>
-        <tr>
-          <td>1°</td>
-          <td>321</td>
-        </tr>
-        <tr>
-          <td>2°</td>
-          <td>231</td>
-        </tr>
-        <tr>
-          <td>3°</td>
-          <td>123</td>
-        </tr>
-      </table>
-    """.trimIndent()
-  }
+        <td>${index + 1}º</td>
+        <td>${data.name}</td>
+        <td>${data.score}</td>
+      </tr>
+      """.trimIndent()  }.joinToString("\n") }
+    </table>
+  """.trimIndent()
 }

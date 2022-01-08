@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 /**
  * Representa as possiveis direções que o player pode ir:
  *  [UP];   
@@ -16,6 +18,9 @@ fun Direction.isInverse(b: Direction): Boolean{
   val dirs = listOf(this,b)
   return dirs.containsAll(listOf(Direction.UP,Direction.DOWN)) || dirs.containsAll(listOf(Direction.LEFT,Direction.RIGHT)) 
 }
+
+data class RankingEntry(val name: String, val score: Int)
+
 
 data class Board(
   val width: Int,
