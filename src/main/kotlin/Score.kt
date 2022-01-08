@@ -1,13 +1,19 @@
 import kotlinx.browser.document
+import org.w3c.dom.HTMLAudioElement
+import org.w3c.dom.HTMLDivElement
 
-fun currentScore(player: Player){
-  val score = document.getElementById("score")
-  if(score != null){
-    val pontos = player.score
-    score.innerHTML = """
-      |<p>Total de pontos: $pontos</p>
-      """.trimMargin()
+fun updateScore(player: Player){
+  val score = document.getElementById("score") as HTMLDivElement? ?: return
+  (document.getElementById("game-audio-fx") as HTMLAudioElement?)?.run{
+    src = "./on_point.wav"
+    volume = 0.5
+    play()
   }
+  
+  val pontos = player.score
+  score.innerHTML = """
+    |<p>Total de pontos: $pontos</p>
+    """.trimMargin()
 }
 
 fun updateRanking(ranking: List<RankingEntry>){

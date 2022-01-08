@@ -2,7 +2,7 @@
 
 /**
  * Representa as possiveis direções que o player pode ir:
- *  [UP];   
+ *  [UP];
  *  [DOWN];  
  *  [LEFT]; 
  *  [RIGHT];  

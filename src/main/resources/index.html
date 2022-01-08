@@ -2,8 +2,13 @@
 <!--suppress HtmlUnknownTarget -->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>JS Client</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="theme-color" content="#112" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <title>Lambda Snake</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body style="background-image: url(https://pm1.narvii.com/7611/aa8a212cf732d72692d269ce8bf3e95dd2bfd0f5r1-720-682v2_hq.jpg)">
@@ -72,7 +77,8 @@
         <div id="score-table"> </div>
       </div>
     </main>
-<script src="kotlinjs-snake.js"></script>
-<div id="root"></div>
+    <audio  id="game-audio" loop preload="auto" src="./soundtrack.mp3"></audio>
+    <audio type="audio/wav" id="game-audio-fx" preload="auto" src="./on_point.wav"></audio>
+<script src="./kotlinjs-snake.js"></script>
 </body>
 </html>
