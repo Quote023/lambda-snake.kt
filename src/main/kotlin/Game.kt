@@ -18,6 +18,7 @@ fun initHtml(){
   val rankingData = JSON.parse<Array<RankingEntry>>(window.localStorage[RANKING_KEY] ?: "[]").toList()
   console.log(rankingData)
   updateRanking(rankingData)
+  
   startButton.onclick = {
     val canvas = document.getElementById("game-canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d")!! as CanvasRenderingContext2D
@@ -25,11 +26,14 @@ fun initHtml(){
     context.clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
     mainMenu.style.display = "none"
     canvas.style.display = "block"
-    
-    
-    gameStart(context,canvasDimensions,rankingData)
+
+      (document.getElementById("game-audio") as HTMLAudioElement?)?.run {
+        volume = 0.5
+        play()
+      }
+      gameStart(context,canvasDimensions,rankingData)
+    }
   }
-}
 
 
 /**
@@ -70,7 +74,7 @@ fun gameStart(context: CanvasRenderingContext2D, canvasDimensions: Dimensions, r
   console.log(board)
   console.log(board.toString())
   //Começa o loop de jogo, isso é uma função recursiva que roda indefinidamente até que o jogo acabe
-  
+  updateScore(board.player)
   gameLoop(board,context,canvasDimensions,ranking)
 }
 
@@ -100,22 +104,31 @@ fun gameLoop(boardState: Board, context: CanvasRenderingContext2D,canvasDim: Dim
   }
   
   val newBoard = movePlayer(boardState,player)
-  window.setTimeout({gameLoop(newBoard,context,canvasDim,ranking)}, max(10,(100 - (2 * player.tail.size))))
-  currentScore(player)
+  val scoreUpdated = newBoard.player.score > player.score
+  window.setTimeout({
+    if(scoreUpdated) updateScore(newBoard.player)
+    gameLoop(newBoard,context,canvasDim,ranking)
+  }, max(10,(100 - (2 * player.tail.size))))
 }
 
 fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState: Board,ranking: List<RankingEntry>){
-  val player = boardState.player
-  
   console.log(boardState.toString())
   context.fillStyle = "#000000CC"
   context.shadowBlur = 0.5
   context.fillRect(0.0, 0.0, canvasDim.width.toDouble(),canvasDim.height.toDouble())
-  
   (document.getElementById("end-screen") as HTMLDivElement).style.display = "flex"
   (document.getElementById("game-score") as HTMLSpanElement).innerText = boardState.player.score.toString()
+  (document.getElementById("game-canvas") as HTMLCanvasElement).style.display = "none"
+  val player = boardState.player
+  val win = (ranking.isNotEmpty() && player.score > ranking[0].score)
+  (document.getElementById("game-audio") as HTMLAudioElement?)?.pause()
+  (document.getElementById("game-audio-fx") as HTMLAudioElement?)?.run{
+    src = if(win) "on_win.wav" else "on_lose.wav"
+    volume = 0.5
+    play()
+  }
   
-  if(ranking.size > 0 && player.score > ranking[0].score){
+  if(win){
     val endImg = (document.getElementById("end-img") as HTMLImageElement)
     endImg.src = "./congratulations.svg"
     endImg.alt = "Congratulations Text with Party Emojis"
@@ -132,7 +145,7 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
     //Logica de salvar no Localstorage
     console.log(scoreEntry)
     window.localStorage[RANKING_KEY] = JSON.stringify((ranking + scoreEntry).sortedByDescending { it.score })
-    
+
     window.location.reload()
     return@submit null
   }
