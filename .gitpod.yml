@@ -1,5 +1,5 @@
 tasks:
   - init: |
-      echo 'TODO: build project'
+      echo 'Inicializando Servidor de Produção'
     command: |
-      ./gradlew run
+      ./gradlew browserProductionRun
