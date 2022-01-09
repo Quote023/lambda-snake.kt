@@ -94,7 +94,6 @@ body{
 }
 
 #score-table {
-  padding: 3% 10% 10%;
   overflow: auto;
   height: 90%;
 }
@@ -114,7 +113,7 @@ body{
 
 blink {
   -webkit-animation: 2s linear infinite condemned_blink_effect; /* for Safari 4.0 - 8.0 */
-  animation: 2s linear infinite condemned_blink_effect;
+  animation: 3s linear infinite condemned_blink_effect;
 }
 
 /* for Safari 4.0 - 8.0 */

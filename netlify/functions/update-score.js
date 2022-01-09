@@ -22,7 +22,11 @@
  */
 
 const fetch = require('node-fetch')
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
 
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 /**
  * 
@@ -35,12 +39,12 @@ async function updateScore(event, context) {
   
   //Validation
   const body = {
-    name: userData.name,
-    score: userData.score 
+    name: DOMPurify.sanitize(userData.name),
+    score: Number.parseInt(userData.score.toString()) 
   }
   
   if(!body.name) throw new Error("missign parameter: name")
-  if(!body.score) throw new Error("missign parameter: score")
+  if(!body.score || !isNaN(body.score)) throw new Error("missign parameter: score")
   
   await fetch('https://jsonbin.org/me/leaderboard', {
     headers: { authorization: `token ${process.env.JSON_KEY}`},

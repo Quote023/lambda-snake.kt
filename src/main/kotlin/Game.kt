@@ -1,15 +1,13 @@
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.fetch.RequestInit
 import kotlin.math.max
 
 
 
-/**
- * Ponto de entrada do software, inicializa o jogo no momento que a página é carregada por completo
- */
 @Suppress("UNCHECKED_CAST")
 suspend fun main() {
    val response = window.fetch("https://jsonbin.org/quote023/leaderboard").await()
@@ -53,35 +51,36 @@ fun initHtml(ranking: List<RankingEntry>? = null) {
  * modificado no evento "keydown" definido no [gameStart]
  */
 var desiredDir = Direction.LEFT
-
 fun gameStart(context: CanvasRenderingContext2D, canvasDimensions: Dimensions, ranking: List<RankingEntry>){
   //Calcula as dimensões da tela de jogo.
   val boardDimensions = canvasDimensions / CANVAS_SCALE
   
   //Gatilho disparado sempre que qualquer tecla seja pressionada no teclado do usuário
-  window.addEventListener("keydown",{event -> if(event is KeyboardEvent) {
-    /** Caso a tecla pressionada seja um comando de movimento válido, redefine a [desiredDir] para a direção escolhida **/
-    when (event.key) {
-      "ArrowUp", "w" -> {
-        event.preventDefault()
-        desiredDir = Direction.UP
+  val handleKeydown = {event: Event -> if(event is KeyboardEvent) {
+      /** Caso a tecla pressionada seja um comando de movimento válido, redefine a [desiredDir] para a direção escolhida **/
+      when (event.key) {
+        "ArrowUp", "w" -> {
+          event.preventDefault()
+          desiredDir = Direction.UP
+        }
+        "ArrowDown", "s" -> {
+          event.preventDefault()
+          desiredDir = Direction.DOWN
+        }
+        "ArrowLeft", "a" -> {
+          event.preventDefault()
+          desiredDir = Direction.LEFT
+        }
+        "ArrowRight", "d" -> {
+          event.preventDefault()
+          desiredDir = Direction.RIGHT
+        }
+        else -> Unit
       }
-      "ArrowDown", "s" -> {
-        event.preventDefault()
-        desiredDir = Direction.DOWN
-      }
-      "ArrowLeft", "a" -> {
-        event.preventDefault()
-        desiredDir = Direction.LEFT
-      }
-      "ArrowRight", "d" -> {
-        event.preventDefault()
-        desiredDir = Direction.RIGHT
-      }
-      else -> Unit
     }
-  } 
-  })
+  }
+  
+  window.addEventListener("keydown",handleKeydown)
   
   //Incializa um tabuleiro aleatório
   val board = initRandomBoard(boardDimensions.width,boardDimensions.height)
@@ -90,17 +89,18 @@ fun gameStart(context: CanvasRenderingContext2D, canvasDimensions: Dimensions, r
   console.log(board.toString())
   //Começa o loop de jogo, isso é uma função recursiva que roda indefinidamente até que o jogo acabe
   updateScore(board.player)
-  gameLoop(board,context,canvasDimensions,ranking)
+  gameLoop(board,context,canvasDimensions){ lastState ->
+    window.removeEventListener("keydown",handleKeydown)
+    endGame(context,canvasDimensions,lastState,ranking)
+  }
 }
-
-
 
 /**
  * @param boardState lista com a posição e estado atual de todas as peças no tabuleiro
  * @param context usado para imprimir as informações do tabuleiro na tela **(pintar os pixeis no canvas)**
  * @param canvasDim dimensões do canvas **(Definido na primeira iteração, não mudar)**
  */
-fun gameLoop(boardState: Board, context: CanvasRenderingContext2D,canvasDim: Dimensions,ranking: List<RankingEntry>){
+fun gameLoop(boardState: Board, context: CanvasRenderingContext2D,canvasDim: Dimensions, onFinish: (lastState: Board) -> Unit) {
   /**
   * Caso a direção do player seja alterada entre as renderizações (AÇÃO IMPURA)
   * gera uma cópia da peça do jogador com essa informação atualizada e usa ela no lugar
@@ -114,7 +114,7 @@ fun gameLoop(boardState: Board, context: CanvasRenderingContext2D,canvasDim: Dim
   renderBoard(context,boardState)
   
   if(player.life <= 0){
-    endGame(context, canvasDim,boardState,ranking)
+    onFinish(boardState)
     return
   }
   
@@ -122,7 +122,7 @@ fun gameLoop(boardState: Board, context: CanvasRenderingContext2D,canvasDim: Dim
   val scoreUpdated = newBoard.player.score > player.score
   window.setTimeout({
     if(scoreUpdated) updateScore(newBoard.player)
-    gameLoop(newBoard,context,canvasDim,ranking)
+    gameLoop(newBoard,context,canvasDim,onFinish)
   }, max(10,(100 - (2 * player.tail.size))))
 }
 
@@ -131,11 +131,14 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
   context.fillStyle = "#000000CC"
   context.shadowBlur = 0.5
   context.fillRect(0.0, 0.0, canvasDim.width.toDouble(),canvasDim.height.toDouble())
+  
   (document.getElementById("end-screen") as HTMLDivElement).style.display = "flex"
   (document.getElementById("game-score") as HTMLSpanElement).innerText = boardState.player.score.toString()
   (document.getElementById("game-canvas") as HTMLCanvasElement).style.display = "none"
+  
   val player = boardState.player
   val win = (ranking.isNotEmpty() && player.score > ranking[0].score)
+  
   (document.getElementById("game-audio") as HTMLAudioElement?)?.pause()
   (document.getElementById("game-audio-fx") as HTMLAudioElement?)?.run{
     src = if(win) "on_win.wav" else "on_lose.wav"
@@ -166,7 +169,10 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
     val jsonData = JSON.stringify(scoreEntry)
     window.fetch("https://lambda-snake.netlify.app/.netlify/functions/update-score", RequestInit(method = "POST", body = jsonData)).then { 
       window.location.reload()
+    }.catch { 
+      window.location.reload()
     }
+    
     return@submit null
   }
 }
