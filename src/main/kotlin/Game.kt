@@ -25,10 +25,9 @@ suspend fun main() {
 }
 
 fun initHtml(ranking: List<RankingEntry>? = null) {
-  console.log(ranking)
   val mainMenu = document.getElementById("start-menu") as HTMLDivElement
   val startButton = document.getElementById("start-btn") as HTMLButtonElement
-  val rankingData = ranking ?: JSON.parse<Array<RankingEntry>>(window.localStorage[RANKING_KEY] ?: "[]").toList()
+  val rankingData = (ranking ?: JSON.parse<Array<RankingEntry>>(window.localStorage[RANKING_KEY] ?: "[]").toList()).sortedByDescending { it.score }
   updateRanking(rankingData)
   
   startButton.onclick = {

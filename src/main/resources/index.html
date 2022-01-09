@@ -11,13 +11,20 @@
   <title>Lambda Snake</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body style="background-image: url(https://pm1.narvii.com/7611/aa8a212cf732d72692d269ce8bf3e95dd2bfd0f5r1-720-682v2_hq.jpg)">
+<body>
     <header class="game-header">
-      <h1>Cobrinha II: A frutinha contra ataca</h1>
+      <h1 style="font-family: Verdana, sans-serif;  -webkit-text-stroke: 1px #ffbf00;">SNAKE IV: O RETORNO DA COBRINHA</h1>
     </header>
     <main class="game-container">
       <div  class="screen-section">
-        <div id="score"> </div>
+        <div style="background: white" id="score">
+          <p id="score-text">Total de pontos: 0</p>
+          <img style="max-width: 25%" src="https://c.tenor.com/oOFF8OOF-UcAAAAj/yaia-dance.gif" alt="garota dançando">
+          <img style="max-width: 25%" src="https://i.gifer.com/origin/9a/9ae8248ade0d8b9ef1d0c032eb7b2283.gif" alt="banana dançando">
+          <img style="max-width: 25%" src="https://i.gifer.com/5Btv.gif" alt="wrestler snake">
+          <img style="max-width: 25%" src="https://i.gifer.com/YCZJ.gif" alt="wrestler snake">
+          <img style="max-width: 25%" src="https://i.gifer.com/X11K.gif" alt="wrestler snake">
+        </div>
       </div>
       <div>
         <div
@@ -66,12 +73,14 @@
             </div>
           </form>
         </div>
-        <canvas
-          style="display:none;"
-          id="game-canvas"
-          width="300"
-          height="300"
-        ></canvas>
+      <canvas
+        style="display:none;"
+        id="game-canvas"
+        width="300"
+        height="300"
+      >
+        
+      </canvas>
       </div>
       <div  class="screen-section">
         <div id="score-table"> </div>

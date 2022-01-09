@@ -1,8 +1,14 @@
 @charset "UTF-8";
 
 body{
-  font-family: cursive;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  background-image: linear-gradient(#00a6f1, #f28201);
 }
+
+* {
+  cursor: url(https://downloads.totallyfreecursors.com/cursor_files/sailormoon11.cur), url(https://downloads.totallyfreecursors.com/thumbnails/11-13.gif), auto;
+}
+
 .game-header{
   text-align: center;
 }
@@ -88,10 +94,13 @@ body{
 }
 
 #score-table {
-  margin: 3% 10% 10%;
+  padding: 3% 10% 10%;
+  overflow: auto;
+  height: 90%;
 }
 #score-table table{
-width: 100%
+  width: 100%;
+
 }
 
 #score-table table tr:nth-child(odd) {
