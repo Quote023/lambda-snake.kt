@@ -35,9 +35,12 @@ async function updateScore(event, context) {
   
   //Validation
   const body = {
-    name: userData.name || throw new Error("Missign name"),
-    score: userData.score || throw new Error("Missign score")
+    name: userData.name,
+    score: userData.score 
   }
+  
+  if(!body.name) throw new Error("missign parameter: name")
+  if(!body.score) throw new Error("missign parameter: score")
   
   await fetch('https://jsonbin.org/me/leaderboard', {
     headers: { authorization: `token ${process.env.JSON_KEY}`},

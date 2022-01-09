@@ -160,7 +160,7 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
     window.localStorage[RANKING_KEY] = JSON.stringify((ranking + scoreEntry).sortedByDescending { it.score })
     //Salvar na Nuvem
     val jsonData = JSON.stringify(scoreEntry)
-    window.fetch(".netlify/functions/update-score", RequestInit(method = "POST", body = jsonData)).then { 
+    window.fetch("https://lambda-snake.netlify.app/.netlify/functions/update-score", RequestInit(method = "POST", body = jsonData)).then { 
       window.location.reload()
     }
     return@submit null
