@@ -63,15 +63,19 @@ fun gameStart(context: CanvasRenderingContext2D, canvasDimensions: Dimensions, r
     /** Caso a tecla pressionada seja um comando de movimento válido, redefine a [desiredDir] para a direção escolhida **/
     when (event.key) {
       "ArrowUp", "w" -> {
+        event.preventDefault()
         desiredDir = Direction.UP
       }
       "ArrowDown", "s" -> {
+        event.preventDefault()
         desiredDir = Direction.DOWN
       }
       "ArrowLeft", "a" -> {
+        event.preventDefault()
         desiredDir = Direction.LEFT
       }
       "ArrowRight", "d" -> {
+        event.preventDefault()
         desiredDir = Direction.RIGHT
       }
       else -> Unit
@@ -151,6 +155,7 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
       return@submit null
     }
     
+    (document.getElementById("restart-btn") as HTMLButtonElement).disabled = true
     val playerName = ((it.target as HTMLFormElement)["name"] as HTMLInputElement).value
     val scoreEntry = RankingEntry(playerName,player.score)
     console.log(scoreEntry)
