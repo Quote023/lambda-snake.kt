@@ -6,7 +6,7 @@ fun updateScore(player: Player){
   val score = document.getElementById("score") as HTMLDivElement? ?: return
   (document.getElementById("game-audio-fx") as HTMLAudioElement?)?.run{
     src = "./on_point.wav"
-    volume = 0.5
+    volume = 0.2
     play()
   }
   

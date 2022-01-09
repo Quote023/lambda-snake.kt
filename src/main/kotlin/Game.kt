@@ -2,21 +2,33 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.KeyboardEvent
+import org.w3c.fetch.RequestInit
 import kotlin.math.max
+
 
 
 /**
  * Ponto de entrada do software, inicializa o jogo no momento que a página é carregada por completo
  */
-fun main() {
-    window.onload = { initHtml() }
+@Suppress("UNCHECKED_CAST")
+suspend fun main() {
+   val response = window.fetch("https://jsonbin.org/quote023/leaderboard").await()
+   val ranking = if(response.ok) {
+     response.json().await().let{
+       if(it is Array<*>) it.toList() as List<RankingEntry>
+       else null
+     }
+   }else 
+     null
+  
+  initHtml(ranking)
 }
 
-fun initHtml(){
+fun initHtml(ranking: List<RankingEntry>? = null) {
+  console.log(ranking)
   val mainMenu = document.getElementById("start-menu") as HTMLDivElement
   val startButton = document.getElementById("start-btn") as HTMLButtonElement
-  val rankingData = JSON.parse<Array<RankingEntry>>(window.localStorage[RANKING_KEY] ?: "[]").toList()
-  console.log(rankingData)
+  val rankingData = ranking ?: JSON.parse<Array<RankingEntry>>(window.localStorage[RANKING_KEY] ?: "[]").toList()
   updateRanking(rankingData)
   
   startButton.onclick = {
@@ -28,7 +40,7 @@ fun initHtml(){
     canvas.style.display = "block"
 
       (document.getElementById("game-audio") as HTMLAudioElement?)?.run {
-        volume = 0.5
+        volume = 0.2
         play()
       }
       gameStart(context,canvasDimensions,rankingData)
@@ -124,7 +136,7 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
   (document.getElementById("game-audio") as HTMLAudioElement?)?.pause()
   (document.getElementById("game-audio-fx") as HTMLAudioElement?)?.run{
     src = if(win) "on_win.wav" else "on_lose.wav"
-    volume = 0.5
+    volume = 0.2
     play()
   }
   
@@ -142,11 +154,15 @@ fun endGame(context: CanvasRenderingContext2D, canvasDim: Dimensions,boardState:
     
     val playerName = ((it.target as HTMLFormElement)["name"] as HTMLInputElement).value
     val scoreEntry = RankingEntry(playerName,player.score)
-    //Logica de salvar no Localstorage
     console.log(scoreEntry)
+    
+    //Logica de salvar no Localstorage
     window.localStorage[RANKING_KEY] = JSON.stringify((ranking + scoreEntry).sortedByDescending { it.score })
-
-    window.location.reload()
+    //Salvar na Nuvem
+    val jsonData = JSON.stringify(scoreEntry)
+    window.fetch(".netlify/functions/update-score", RequestInit(method = "POST", body = jsonData)).then { 
+      window.location.reload()
+    }
     return@submit null
   }
 }
