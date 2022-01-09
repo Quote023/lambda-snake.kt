@@ -43,8 +43,11 @@ async function updateScore(event, context) {
     score: Number.parseInt(userData.score.toString()) 
   }
   
+  
+  console.log(body.name)
+  
   if(!body.name) throw new Error("missign parameter: name")
-  if(!body.score || !isNaN(body.score)) throw new Error("missign parameter: score")
+  if(!body.score || isNaN(body.score)) throw new Error("missign parameter: score")
   
   await fetch('https://jsonbin.org/me/leaderboard', {
     headers: { authorization: `token ${process.env.JSON_KEY}`},
