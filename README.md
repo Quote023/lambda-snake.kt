@@ -1,6 +1,6 @@
 ![image](src/main/resources/logo.svg)
 
-### Projeto de Linguagem de Programação Funcional 
+### Projeto da disciplina de Linguagem de Programação Funcional 2021.1 (jan/2022)
 
 ![image](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
 [![GitHub issues](https://img.shields.io/github/issues/Quote023/lambda-snake.kt)](https://github.com/Quote023/lambda-snake.kt/issues)
