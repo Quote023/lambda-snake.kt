@@ -2,6 +2,7 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLAudioElement
 import org.w3c.dom.HTMLParagraphElement
 
+
 fun updateScore(player: Player){
   val score = document.getElementById("score-text") as HTMLParagraphElement? ?: return
   
